@@ -1,0 +1,31 @@
+{
+  "name": "AstraPulse",
+  "short_name": "AstraPulse",
+  "description": "Your daily cosmic ritual — astrology that actually knows you",
+  "start_url": "/today",
+  "display": "standalone",
+  "background_color": "#0a0a1a",
+  "theme_color": "#7c5bf0",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["lifestyle", "entertainment"],
+  "lang": "en",
+  "prefer_related_applications": false
+}
