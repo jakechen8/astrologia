@@ -108,7 +108,9 @@ function Navbar() {
         <div className="hidden md:flex items-center gap-8 text-sm text-white/50">
           <a href="#how-it-works" className="hover:text-white transition-colors">How it works</a>
           <a href="#features" className="hover:text-white transition-colors">Features</a>
-          <a href="#demo" className="hover:text-white transition-colors">Demo</a>
+          <Link href="/compatibility" className="hover:text-white transition-colors">Compatibility</Link>
+          <Link href="/ask" className="hover:text-white transition-colors">Ask the Stars</Link>
+          <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
         </div>
 
         <Link
@@ -444,6 +446,67 @@ function DemoSection() {
   );
 }
 
+function ExploreSection() {
+  const tools = [
+    {
+      href: "/compatibility",
+      emoji: "💞",
+      title: "Compatibility Checker",
+      desc: "See how your signs vibe. Vedic + Western insights on any pairing.",
+      color: "from-rose-500/20 to-ember-500/20",
+    },
+    {
+      href: "/ask",
+      emoji: "✨",
+      title: "Ask the Stars",
+      desc: "Got a burning question? Ask anything and get cosmic guidance in seconds.",
+      color: "from-aurora-500/20 to-jade-500/20",
+    },
+    {
+      href: "/weekly",
+      emoji: "📊",
+      title: "Weekly Recap",
+      desc: "See your mood trends, patterns, and how your Lifeprint evolved this week.",
+      color: "from-jade-500/20 to-aurora-500/20",
+    },
+    {
+      href: "/blog",
+      emoji: "📖",
+      title: "Cosmic Blog",
+      desc: "Deep dives on Nakshatras, Rashi guides, zodiac relationship styles, and more.",
+      color: "from-ember-500/20 to-rose-500/20",
+    },
+  ];
+
+  return (
+    <section className="relative py-32 px-5">
+      <div className="max-w-6xl mx-auto">
+        <motion.div className="text-center mb-16" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <div className="text-rose-400 text-sm font-medium mb-3 uppercase tracking-wider">Explore</div>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Beyond your daily reading</h2>
+          <p className="text-white/40 max-w-lg mx-auto">Free tools and guides to deepen your cosmic journey.</p>
+        </motion.div>
+        <div className="grid sm:grid-cols-2 gap-5">
+          {tools.map((tool, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+              <Link href={tool.href} className="block glass rounded-2xl p-6 hover:bg-white/[0.04] transition-all group h-full">
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-2xl mb-4`}>
+                  {tool.emoji}
+                </div>
+                <h3 className="text-lg font-semibold mb-2 group-hover:text-aurora-300 transition-colors">{tool.title}</h3>
+                <p className="text-sm text-white/40 leading-relaxed">{tool.desc}</p>
+                <div className="mt-4 flex items-center gap-1.5 text-sm text-aurora-400 font-medium">
+                  Try it free <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function CTASection() {
   return (
     <section className="relative py-32 px-5">
@@ -475,7 +538,11 @@ function Footer() {
           </div>
           <span>AstraPulse</span>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <Link href="/blog" className="hover:text-white/50 transition-colors">Blog</Link>
+          <Link href="/compatibility" className="hover:text-white/50 transition-colors">Compatibility</Link>
+          <Link href="/ask" className="hover:text-white/50 transition-colors">Ask the Stars</Link>
+          <Link href="/how-it-works" className="hover:text-white/50 transition-colors">How it works</Link>
           <Link href="/privacy" className="hover:text-white/50 transition-colors">Privacy</Link>
           <Link href="/terms" className="hover:text-white/50 transition-colors">Terms</Link>
           <span>© 2026</span>
@@ -496,6 +563,7 @@ export default function LandingPage() {
         <CompoundingSection />
         <FeaturesSection />
         <DemoSection />
+        <ExploreSection />
         <CTASection />
         <Footer />
       </div>
