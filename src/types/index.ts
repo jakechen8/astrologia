@@ -4,8 +4,8 @@
 
 export interface User {
   id: string;
-  phone: string;
-  email?: string;
+  email: string;
+  phone?: string;
   createdAt: Date;
   languagePref: 'en' | 'hi' | 'ta' | 'te' | 'bn' | 'mr';
   tonePref: 'gentle' | 'direct' | 'spiritual' | 'playful';

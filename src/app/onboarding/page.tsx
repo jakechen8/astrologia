@@ -31,7 +31,7 @@ const TONE_OPTIONS = [
   { label: "Spiritual", desc: "Deep and reflective", icon: "🕉️", value: "spiritual" },
 ];
 
-const STEPS = ["Welcome", "Phone", "Birth Data", "Focus", "Mood", "Tone", "Your Chart"];
+const STEPS = ["Welcome", "Email", "Birth Data", "Focus", "Mood", "Tone", "Your Chart"];
 
 function ProgressBar({ step, total }: { step: number; total: number }) {
   return (
@@ -54,9 +54,9 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { setUser, setBirthProfile, setAstroChart, setLifeprint } = useStore();
   const [step, setStep] = useState(0);
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [codeSent, setCodeSent] = useState(false);
   const [dob, setDob] = useState("");
   const [birthTime, setBirthTime] = useState("");
   const [birthTimeConfidence, setBirthTimeConfidence] = useState<"exact" | "approx" | "unknown">("exact");
@@ -70,16 +70,17 @@ export default function OnboardingPage() {
   const next = useCallback(() => setStep((s) => Math.min(s + 1, STEPS.length - 1)), []);
   const prev = useCallback(() => setStep((s) => Math.max(s - 1, 0)), []);
 
-  const handleSendOtp = () => {
-    setOtpSent(true);
-    // In production: POST /api/auth/otp/start
+  const handleSendCode = () => {
+    setCodeSent(true);
+    // In production: POST /api/auth/magic-link with action "send"
   };
 
-  const handleVerifyOtp = () => {
-    // In production: POST /api/auth/otp/verify
+  const handleVerifyCode = () => {
+    // In production: POST /api/auth/magic-link with action "verify"
     setUser({
       id: crypto.randomUUID(),
-      phone,
+      email,
+      phone: "",
       createdAt: new Date(),
       languagePref: "en",
       tonePref: "gentle",
@@ -212,50 +213,49 @@ export default function OnboardingPage() {
                 </motion.div>
               )}
 
-              {/* Step 1: Phone Auth */}
+              {/* Step 1: Email Magic Link */}
               {step === 1 && (
-                <motion.div key="phone" variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }} className="space-y-8">
+                <motion.div key="email" variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }} className="space-y-8">
                   <div className="text-center space-y-3">
                     <div className="w-14 h-14 rounded-xl bg-aurora-500/15 flex items-center justify-center mx-auto">
-                      <Phone className="w-6 h-6 text-aurora-400" />
+                      <Mail className="w-6 h-6 text-aurora-400" />
                     </div>
                     <h2 className="text-2xl font-bold">Quick sign in</h2>
-                    <p className="text-white/40 text-sm">We&apos;ll send you a one-time code</p>
+                    <p className="text-white/40 text-sm">We&apos;ll send you a magic code</p>
                   </div>
 
-                  {!otpSent ? (
+                  {!codeSent ? (
                     <div className="space-y-4">
                       <div className="glass rounded-xl p-1 flex items-center">
-                        <span className="px-4 text-sm text-white/40 border-r border-white/10">+91</span>
+                        <Mail className="w-4 h-4 text-white/30 ml-4" />
                         <input
-                          type="tel"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="Phone number"
-                          className="flex-1 bg-transparent px-4 py-4 text-white outline-none text-sm"
-                          maxLength={10}
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="your@email.com"
+                          className="flex-1 bg-transparent px-4 py-4 text-white outline-none text-sm placeholder:text-white/20"
                         />
                       </div>
-                      <button onClick={handleSendOtp} disabled={phone.length < 10} className="w-full bg-aurora-500 hover:bg-aurora-400 disabled:opacity-30 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-2xl transition-all">
-                        Send OTP
+                      <button onClick={handleSendCode} disabled={!email || !email.includes("@")} className="w-full bg-aurora-500 hover:bg-aurora-400 disabled:opacity-30 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-2xl transition-all">
+                        Send magic code
                       </button>
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      <p className="text-center text-sm text-white/40">Enter the code sent to +91 {phone}</p>
+                      <p className="text-center text-sm text-white/40">Enter the 6-digit code sent to {email}</p>
                       <div className="flex gap-2 justify-center">
                         {[0, 1, 2, 3, 4, 5].map((i) => (
                           <input
                             key={i}
                             type="text"
                             maxLength={1}
-                            value={otp[i] || ""}
+                            value={code[i] || ""}
                             onChange={(e) => {
                               const val = e.target.value;
                               if (/^\d?$/.test(val)) {
-                                const newOtp = otp.split("");
-                                newOtp[i] = val;
-                                setOtp(newOtp.join(""));
+                                const newCode = code.split("");
+                                newCode[i] = val;
+                                setCode(newCode.join(""));
                                 if (val && i < 5) {
                                   const nextInput = e.target.parentElement?.children[i + 1] as HTMLInputElement;
                                   nextInput?.focus();
@@ -266,17 +266,14 @@ export default function OnboardingPage() {
                           />
                         ))}
                       </div>
-                      <button onClick={handleVerifyOtp} disabled={otp.length < 6} className="w-full bg-aurora-500 hover:bg-aurora-400 disabled:opacity-30 text-white font-semibold py-4 rounded-2xl transition-all">
+                      <button onClick={handleVerifyCode} disabled={code.length < 6} className="w-full bg-aurora-500 hover:bg-aurora-400 disabled:opacity-30 text-white font-semibold py-4 rounded-2xl transition-all">
                         Verify & Continue
+                      </button>
+                      <button onClick={() => { setCodeSent(false); setCode(""); }} className="text-xs text-white/30 hover:text-white/50 transition-colors mx-auto">
+                        Didn&apos;t receive code? Resend
                       </button>
                     </div>
                   )}
-
-                  <div className="text-center">
-                    <button onClick={next} className="text-xs text-white/30 hover:text-white/50 transition-colors flex items-center gap-1 mx-auto">
-                      <Mail className="w-3 h-3" /> Use email instead
-                    </button>
-                  </div>
                 </motion.div>
               )}
 
